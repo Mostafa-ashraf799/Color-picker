@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة اختيار الألوان الشاملة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .main-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .color-display {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 3px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 60px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .color-palette {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .palette-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            gap: 8px;
+        }
+
+        .color-box {
+            width: 100%;
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .color-box:hover {
+            transform: scale(1.15);
+            border-color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .color-box.selected {
+            border-color: #333;
+            border-width: 3px;
+        }
+
+        .gradient-picker {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .hue-slider, .saturation-brightness {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .saturation-brightness {
+            height: 200px;
+            border-radius: 10px;
+            position: relative;
+            cursor: crosshair;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .sb-cursor {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 30px;
+            border-radius: 10px;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .code-display {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .code-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .code-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .code-value {
+            font-family: 'Courier New', monospace;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #10b981;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .main-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-grid {
+                grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification">تم النسخ بنجاح! ✓</div>
+    
+    <div class="container">
+        <h1>🎨 لوحة اختيار الألوان الشاملة</h1>
+        
+        <div class="main-section">
+            <div class="color-display" id="colorDisplay"></div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label>🎨 اختيار سريع</label>
+                    <input type="color" id="colorPicker" value="#667eea">
+                </div>
+                
+                <div class="control-group">
+                    <label>✍️ كود اللون</label>
+                    <input type="text" id="hexInput" value="#667eea" placeholder="#000000">
+                </div>
+                
+                <div class="code-display">
+                    <div class="code-item">
+                        <span class="code-label">HEX:</span>
+                        <span class="code-value" id="hexCode">#667eea</span>
+                    </div>
+                    <div class="code-item">
+                        <span class="code-label">RGB:</span>
+                        <span class="code-value" id="rgbCode">rgb(102, 126, 234)</span>
+                    </div>
+                    <div class="code-item">
+                        <span class="code-label">HSL:</span>
+                        <span class="code-value" id="hslCode">hsl(229, 76%, 66%)</span>
+                    </div>
+                    <button class="copy-btn" onclick="copyColor()">📋 نسخ الكود</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="gradient-picker">
+            <div class="palette-title">🌈 اختيار دقيق للألوان</div>
+            <div class="saturation-brightness" id="sbPicker">
+                <div class="sb-cursor" id="sbCursor"></div>
+            </div>
+            <label style="display: block; margin: 15px 0 8px; color: #555; font-weight: 600;">درجة اللون (Hue)</label>
+            <input type="range" id="hueSlider" min="0" max="360" value="229" 
+                   style="background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+        </div>
+
+        <div class="color-palette">
+            <div class="palette-title">🎨 ألوان شائعة</div>
+            <div class="color-grid" id="commonColors"></div>
+        </div>
+
+        <div class="color-palette">
+            <div class="palette-title">🌈 طيف الألوان الكامل</div>
+            <div class="color-grid" id="fullSpectrum"></div>
+        </div>
+
+        <div class="color-palette">
+            <div class="palette-title">⚪ درجات الرمادي</div>
+            <div class="color-grid" id="grayscale"></div>
+        </div>
+    </div>
+
+    <script>
+        const colorPicker = document.getElementById('colorPicker');
+        const hexInput = document.getElementById('hexInput');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const hexCode = document.getElementById('hexCode');
+        const rgbCode = document.getElementById('rgbCode');
+        const hslCode = document.getElementById('hslCode');
+        const notification = document.getElementById('notification');
+        const hueSlider = document.getElementById('hueSlider');
+        const sbPicker = document.getElementById('sbPicker');
+        const sbCursor = document.getElementById('sbCursor');
+
+        let currentHue = 229;
+        let currentSaturation = 76;
+        let currentLightness = 66;
+
+        // الألوان الشائعة
+        const commonColors = [
+            '#FF0000', '#FF4500', '#FF6347', '#FF7F50', '#FFA500', '#FFD700',
+            '#FFFF00', '#9ACD32', '#7FFF00', '#00FF00', '#00FA9A', '#00CED1',
+            '#00BFFF', '#1E90FF', '#0000FF', '#4169E1', '#8A2BE2', '#9370DB',
+            '#FF00FF', '#FF1493', '#FF69B4', '#FFC0CB', '#DC143C', '#8B0000',
+            '#A52A2A', '#D2691E', '#CD853F', '#DEB887', '#F5DEB3', '#FFE4B5',
+            '#FFDAB9', '#EEE8AA', '#F0E68C', '#BDB76B', '#808000', '#6B8E23',
+            '#556B2F', '#8FBC8F', '#90EE90', '#98FB98', '#3CB371', '#2E8B57',
+            '#20B2AA', '#48D1CC', '#40E0D0', '#7FFFD4', '#B0E0E6', '#87CEEB',
+            '#87CEFA', '#4682B4', '#5F9EA0', '#6495ED', '#191970', '#000080',
+            '#00008B', '#0000CD', '#483D8B', '#6A5ACD', '#7B68EE', '#9932CC',
+            '#BA55D3', '#DA70D6', '#EE82EE', '#D8BFD8', '#DDA0DD', '#C71585'
+        ];
+
+        // إنشاء طيف ألوان كامل
+        function generateFullSpectrum() {
+            const colors = [];
+            for (let h = 0; h < 360; h += 10) {
+                for (let s = 100; s >= 40; s -= 30) {
+                    for (let l = 50; l <= 70; l += 20) {
+                        colors.push(hslToHex(h, s, l));
+                    }
+                }
+            }
+            return colors;
+        }
+
+        // إنشاء درجات الرمادي
+        function generateGrayscale() {
+            const colors = [];
+            for (let i = 0; i <= 255; i += 15) {
+                const hex = '#' + i.toString(16).padStart(2, '0').repeat(3);
+                colors.push(hex.toUpperCase());
+            }
+            return colors;
+        }
+
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+
+            if (max === min) {
+                h = s = 0;
+            } else {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                    case g: h = ((b - r) / d + 2) / 6; break;
+                    case b: h = ((r - g) / d + 4) / 6; break;
+                }
+            }
+
+            return {
+                h: Math.round(h * 360),
+                s: Math.round(s * 100),
+                l: Math.round(l * 100)
+            };
+        }
+
+        function updateColor(color) {
+            if (!color.startsWith('#')) color = '#' + color;
+            if (!/^#[0-9A-F]{6}$/i.test(color)) return;
+
+            colorDisplay.style.backgroundColor = color;
+            colorPicker.value = color;
+            hexInput.value = color.toUpperCase();
+            hexCode.textContent = color.toUpperCase();
+
+            const rgb = hexToRgb(color);
+            if (rgb) {
+                rgbCode.textContent = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                hslCode.textContent = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+                
+                currentHue = hsl.h;
+                currentSaturation = hsl.s;
+                currentLightness = hsl.l;
+                hueSlider.value = hsl.h;
+                updateSBPicker();
+            }
+        }
+
+        function updateSBPicker() {
+            sbPicker.style.background = `linear-gradient(to bottom, 
+                rgba(0,0,0,0), rgba(0,0,0,1)), 
+                linear-gradient(to right, 
+                rgba(255,255,255,1), 
+                hsl(${currentHue}, 100%, 50%))`;
+        }
+
+        function renderColorGrid(containerId, colors) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            colors.forEach(color => {
+                const box = document.createElement('div');
+                box.className = 'color-box';
+                box.style.backgroundColor = color;
+                box.title = color;
+                box.onclick = () => updateColor(color);
+                container.appendChild(box);
+            });
+        }
+
+        // التفاعل مع اختيار التشبع والسطوع
+        sbPicker.addEventListener('mousedown', function(e) {
+            function updateSB(e) {
+                const rect = sbPicker.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                const y = Math.max(0, Math.min(e.clientY - rect.top, rect.height));
+                
+                currentSaturation = Math.round((x / rect.width) * 100);
+                currentLightness = Math.round(100 - (y / rect.height) * 100);
+                
+                sbCursor.style.left = x + 'px';
+                sbCursor.style.top = y + 'px';
+                
+                const color = hslToHex(currentHue, currentSaturation, currentLightness);
+                updateColor(color);
+            }
+            
+            updateSB(e);
+            
+            function onMouseMove(e) { updateSB(e); }
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        hueSlider.addEventListener('input', (e) => {
+            currentHue = parseInt(e.target.value);
+            updateSBPicker();
+            const color = hslToHex(currentHue, currentSaturation, currentLightness);
+            updateColor(color);
+        });
+
+        colorPicker.addEventListener('input', (e) => updateColor(e.target.value));
+        hexInput.addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            if (value.match(/^#?[0-9A-F]{6}$/i)) updateColor(value);
+        });
+
+        function copyColor() {
+            navigator.clipboard.writeText(hexInput.value).then(() => {
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 2000);
+            });
+        }
+
+        // تهيئة الصفحة
+        renderColorGrid('commonColors', commonColors);
+        renderColorGrid('fullSpectrum', generateFullSpectrum());
+        renderColorGrid('grayscale', generateGrayscale());
+        updateColor('#667eea');
+        updateSBPicker();
+    </script>
+</body>
+</html>
